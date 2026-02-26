@@ -1,18 +1,36 @@
-<!-- Import jsPDF library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+</head>
+<body>
+    <div class="action-bar">
+        <button id="downloadPDF">Download PDF</button>
+        <button id="downloadDOCX">Download DOCX</button>
+    </div>
+    <script>
+        document.getElementById('downloadPDF').addEventListener('click', function() {
+            html2canvas(document.body).then(function(canvas) {
+                var pdf = new jsPDF();
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0);
+                pdf.save('document.pdf');
+            });
+        });
 
-<!-- Download PDF Button -->
-<button id="download-pdf">Download PDF</button>
-
-<script>
-  document.getElementById('download-pdf').addEventListener('click', () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    // Assuming there's a translated text element with id 'translated-text'
-    const translatedText = document.getElementById('translated-text').innerText;
-
-    doc.text(translatedText, 10, 10);
-    doc.save('translated-text.pdf');
-  });
-</script>
+        document.getElementById('downloadDOCX').addEventListener('click', function() {
+            var doc = new Document();
+            var p = doc.createParagraph('Hello World!');
+            doc.addParagraph(p);
+            PizZipUtils.getZip(
+                'your-file-path.docx'
+            ).generateAsync({type: "blob"}).then(function(content) {
+                saveAs(content, 'document.docx');
+            });
+        });
+    </script>
+</body>
+</html>
